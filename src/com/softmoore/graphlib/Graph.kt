@@ -11,14 +11,17 @@ import android.graphics.Color
  */
 class Graph private constructor(builder : Builder)
   {
-    // list of functions to graph with their colors
+    // list of functions to graph
     internal val functions : List<GraphFunction>
 
-    // list of lists of graphPoints to plot with their colors
+    // list of lists of graphPoints to plot
     internal val graphPoints : List<GraphPoints>
 
-    // list of line graphs to draw with their colors
+    // list of line graphs to draw
     internal val lineGraphs : List<GraphPoints>
+
+    // list of line circles to draw
+    internal val graphCircles : List<GraphCircle>
 
     // default colors for background, axes, functions, and graph points
     val backgroundColor : Int
@@ -45,11 +48,12 @@ class Graph private constructor(builder : Builder)
 
     init
       {
-        functions   = builder.functions
-        graphPoints = builder.graphPoints
-        lineGraphs  = builder.lineGraphs
+        functions    = builder.functions
+        graphPoints  = builder.graphPoints
+        lineGraphs   = builder.lineGraphs
+        graphCircles = builder.graphCircles
         backgroundColor = builder.bgColor
-        axesColor   = builder.axesColor
+        axesColor    = builder.axesColor
         xMin    = builder.xMin
         xMax    = builder.xMax
         yMin    = builder.yMin
@@ -74,15 +78,19 @@ class Graph private constructor(builder : Builder)
         // list of line graphs to draw
         internal val lineGraphs = mutableListOf<GraphPoints>()
 
+        // List of circles to draw
+        internal val graphCircles = mutableListOf<GraphCircle>()
+
         // default colors for background, axes, functions, and graphPoints
         var bgColor = Color.WHITE
             private set
-
         var axesColor = Color.BLACK
             private set
-        var functColor = Color.BLACK
+        private var defaultFunctionColor = Color.BLACK
             private set
-        var pointColor = Color.BLACK
+        private var defaultPointColor = Color.BLACK
+            private set
+        private var defaultCircleColor = Color.BLACK
             private set
 
         // bounds for world coordinates
@@ -97,10 +105,12 @@ class Graph private constructor(builder : Builder)
 
         // origin for axes; both axes pass through this point
         var axisX = 0.0
+            private set
         var axisY = 0.0
+            private set
 
         // place tick marks at these positions on the axes
-        var defaultTicks = listOf(-8.0, -6.0, -4.0, -2.0, 2.0, 4.0, 6.0, 8.0)
+        private var defaultTicks = listOf(-8.0, -6.0, -4.0, -2.0, 2.0, 4.0, 6.0, 8.0)
             private set
         var xTicks = defaultTicks
             private set
@@ -115,23 +125,25 @@ class Graph private constructor(builder : Builder)
 
 
         /**
-         * Add a function to graph and the color to be used for the graph.
+         * Add a function to graph using the default color.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun addFunction(function : Function, graphColor : Int) : Builder
+        fun addFunction(function : (Double) -> Double) : Builder
           {
-            functions.add(GraphFunction(function, graphColor))
+            functions.add(GraphFunction(function, defaultFunctionColor))
             return this
           }
 
 
         /**
-         * Add a function to graph to be graphed using the default color.
+         * Add a function to graph and the color to be used for the graph.
+         * Note that function is the second (last) parameter to support
+         * Kotlin conventions for passing lambda expressions.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun addFunction(function : Function) : Builder
+        fun addFunction(color : Int, function : (Double) -> Double) : Builder
           {
-            functions.add(GraphFunction(function, functColor))
+            functions.add(GraphFunction(function, color))
             return this
           }
 
@@ -140,42 +152,31 @@ class Graph private constructor(builder : Builder)
          * Add a list of points to be plotted and the color for those points.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun addPoints(points : List<Point>, pointColor : Int) : Builder
+        fun addPoints(points : List<Point>, color : Int = defaultPointColor) : Builder
           {
-            graphPoints.add(GraphPoints(points, pointColor))
+            graphPoints.add(GraphPoints(points, color))
             return this
           }
 
 
         /**
-         * Add a list of points to be plotted using the default color.
+         * Add a list of points for a line graph to draw and the color for the line graph.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun addPoints(points : List<Point>) : Builder
+        fun addLineGraph(points : List<Point>, color : Int = defaultPointColor) : Builder
           {
-            graphPoints.add(GraphPoints(points, pointColor))
+            lineGraphs.add(GraphPoints(points, color))
             return this
           }
 
 
         /**
-         * Add a list of points for a line graphs to be drawn and the color for the line graph.
+         * Add a circle to draw using the specified color.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun addLineGraph(points : List<Point>, lineGraphColor : Int) : Builder
+        fun addCircle(circle : Circle, color : Int = defaultCircleColor) : Builder
           {
-            lineGraphs.add(GraphPoints(points, lineGraphColor))
-            return this
-          }
-
-
-        /**
-         * Add a list of points for a line graph to be drawn using the default color.
-         * @return This Builder object to allow for chaining of calls to builder methods.
-         */
-        fun addLineGraph(points : List<Point>) : Builder
-          {
-            lineGraphs.add(GraphPoints(points, pointColor))
+            graphCircles.add(GraphCircle(circle, color))
             return this
           }
 
@@ -206,9 +207,9 @@ class Graph private constructor(builder : Builder)
          * Set the default color to be used for graphing functions.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun setFunctionColor(functColor : Int) : Builder
+        fun setFunctionColor(functionColor : Int) : Builder
           {
-            this.functColor = functColor
+            this.defaultFunctionColor = functionColor
             return this
           }
 
@@ -219,7 +220,18 @@ class Graph private constructor(builder : Builder)
          */
         fun setPointColor(pointColor : Int) : Builder
           {
-            this.pointColor = pointColor
+            this.defaultPointColor = pointColor
+            return this
+          }
+
+
+        /**
+         * Set the default color to be used for drawing circles.
+         * @return This Builder object to allow for chaining of calls to builder methods.
+         */
+        fun setCircleColor(circleColor : Int) : Builder
+          {
+            this.defaultCircleColor = circleColor
             return this
           }
 
@@ -254,25 +266,25 @@ class Graph private constructor(builder : Builder)
 
         /**
          * Set the axes to be drawn for this graph.  Note that the value for
-         * x determines the y axis and the value for y determines the x axis.
+         * x determines the y-axis and the value for y determines the x-axis.
          */
-        fun setAxes(axisX : Double, axisY : Double) : Builder
+        fun setAxes(x : Double, y : Double) : Builder
           {
-            this.axisX = axisX
-            this.axisY = axisY
+            this.axisX = x
+            this.axisY = y
             return this
           }
 
 
         /**
          * Set the axes to be drawn for this graph.  Note that the value for
-         * x determines the y axis and the value for y determines the x axis.
+         * x determines the y-axis and the value for y determines the x-axis.
          */
-        fun setAxes(axisX : Int, axisY : Int) : Builder
+        fun setAxes(x : Int, y : Int) : Builder
           {
-          this.axisX = axisX.toDouble()
-          this.axisY = axisY.toDouble()
-          return this
+            this.axisX = x.toDouble()
+            this.axisY = y.toDouble()
+            return this
           }
 
 

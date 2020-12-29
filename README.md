@@ -60,12 +60,9 @@ Class `Graph` contains information about the colors, points, labels, graphs, etc
 ````kotlin
 fun addFunction(function : (Double) -> Double) : Builder
 fun addFunction(color : Int, function : (Double) -> Double) : Builder
-fun addPoints(points : List<Point>) : Builder
-fun addPoints(points : List<Point>, color : Int) : Builder
-fun addLineGraph(points : List<Point>) : Builder
-fun addLineGraph(points : List<Point>, color : Int) : Builder
-fun addCircle(circle : Circle) : Builder
-fun addCircle(circle : Circle, color : Int) : Builder
+fun addPoints(points : List<Point>, color : Int = defaultPointColor) : Builder
+fun addLineGraph(points : List<Point>, color : Int = defaultPointColor) : Builder
+fun addCircle(circle : Circle, color : Int = defaultCircleColor) : Builder
 fun setBackgroundColor(bgColor : Int) : Builder
 fun setAxesColor(axesColor : Int) : Builder
 fun setFunctionColor(functionColor : Int) : Builder
@@ -86,7 +83,7 @@ fun setYLabels(yLabels : List<Label>) : Builder
 fun build() : Graph = Graph(this)
 ````
 
-As shown in Listing 4, many of the methods are overloaded to make the library easier to use.  For example, the default color used to graph a function is black, but that can be changed using method `setFunctionColor()`.  You can add just a function to the `Graph`, and it will be graphed using the current default function color.  Alternatively, there is a single method that lets you add both a function and the color to be used to graph it.
+As shown in Listing 4, many of the methods are overloaded to make the library easier to use.  For example, the default color used to graph a function is black, but that can be changed using method `setFunctionColor()`.  You can add just a function to the `Graph`, and it will be graphed using the current default function color.  Alternatively, there is a single method that lets you add both a function and the color to be used to graph it.  Similarly, several methods are overloaded to accept parameters of type `Int` or type `Double`, with the `Int` values being converted to `Double` within the class.
 
 Observe that some of the builder methods shown in Listing 4 start with the "`set`" prefix, and some start with the "`add`" prefix. Those starting with "`set`" control access to a single attribute value or collection of values, but those starting with "`add`" can be called multiple times to append to a list of similar attribute values.  So, for example, you "`set`" world coordinates, but you can "`add`" multiple functions.  In addition, you can set the "`tick`" marks on an axis, and they will be labeled with numerical values.  Alternatively, you "`set`" labels if you want the tick marks to be labeled with string values (see the x-axis in Figure 1).
 

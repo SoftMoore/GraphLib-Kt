@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.View
-import android.view.WindowManager
 import kotlin.math.abs
 import kotlin.math.round
 import kotlin.math.roundToLong
@@ -19,9 +18,9 @@ class GraphView : View
   {
     private var paint = Paint()
     private var pointRadius = 0
-    private var tickOffset = 0
+    private var tickOffset  = 0
     private var labelOffset = 0
-    private var textSize = 0
+    private var textSize    = 0
 
     // the graph to be drawn with all its properties
     private lateinit var g : Graph
@@ -348,9 +347,6 @@ class GraphView : View
 
     private fun drawLineGraph(graphPoints : GraphPoints, canvas : Canvas)
       {
-        // draw each individual point before drawing the line segments
-        drawPoints(graphPoints, canvas)
-
         // use a path for the line segments of the line graph.
         val path = Path()
         val points = graphPoints.points
@@ -376,10 +372,32 @@ class GraphView : View
       }
 
 
+    private fun drawGraphCircles(canvas : Canvas)
+      {
+        for (circle in g.graphCircles)
+            drawGraphCircle(circle, canvas)
+      }
+
+
+    private fun drawGraphCircle(graphCircle : GraphCircle, canvas : Canvas)
+      {
+        paint.style = Paint.Style.STROKE
+        paint.color = graphCircle.color
+
+        val circle = graphCircle.circle
+
+        val screenX = toScreenX(circle.x)
+        val screenY = toScreenY(circle.y)
+        val screenR = toScreenX(circle.x + circle.radius) - screenX
+
+        canvas.drawCircle(screenX.toFloat(), screenY.toFloat(), screenR.toFloat(), paint)
+      }
+
+
     /**
      * Returns the list of screen points for the specified function.
      */
-    private fun getScreenPointsForFunction(f : Function) : List<ScreenPoint>
+    private fun getScreenPointsForFunction(f : (Double) -> Double) : List<ScreenPoint>
       {
         val screenPoints = mutableListOf<ScreenPoint>()
         var screenY : Int
@@ -388,7 +406,7 @@ class GraphView : View
         for (screenX in -1..width)
           {
             val x = toWorldX(screenX)
-            val y = f.apply(x)
+            val y = f.invoke(x)
 
             if (isFinite(y))
               {
@@ -444,5 +462,6 @@ class GraphView : View
         drawFunctions(canvas)
         drawGraphPoints(canvas)
         drawLineGraphs(canvas)
+        drawGraphCircles(canvas)
       }
   }

@@ -1,10 +1,12 @@
 package com.softmoore.graphlib
 
+
 /**
  * A list of points together with a color used to plot them.  This
  * class is used for both plotting points and drawing line graphs.
  */
-internal class GraphPoints(points : List<Point>, val color : Int)
+internal data class GraphPoints(val points : List<Point>, val color : Int)
+/*
   {
     val points : List<Point>
 
@@ -15,7 +17,7 @@ internal class GraphPoints(points : List<Point>, val color : Int)
           {
             val tempPoints = points.toMutableList()
             tempPoints.sort()
-            removeDuplicates(tempPoints)
+            tempPoints.removeDuplicates()
             this.points = tempPoints
           }
         else
@@ -23,19 +25,18 @@ internal class GraphPoints(points : List<Point>, val color : Int)
       }
 
 
-    companion object
+    // assumes that the list is sorted
+    private fun <E : Comparable<E>> MutableList<E>.removeDuplicates()
       {
-        private fun <E : Comparable<E>> removeDuplicates(items : MutableList<E>)
+        val iter = iterator()
+        var oldItem = iter.next()
+        while (iter.hasNext())
           {
-            val iter = items.iterator()
-            var oldItem = iter.next()
-            while (iter.hasNext())
-              {
-                val nextItem = iter.next()
-                if (oldItem.compareTo(nextItem) == 0)
-                  iter.remove()
-                oldItem = nextItem
-              }
+            val nextItem = iter.next()
+            if (oldItem.compareTo(nextItem) == 0)
+              iter.remove()
+            oldItem = nextItem
           }
       }
   }
+*/
