@@ -87,11 +87,8 @@ class Graph private constructor(builder : Builder)
         var axesColor = Color.BLACK
             private set
         private var defaultFunctionColor = Color.BLACK
-            private set
         private var defaultPointColor = Color.BLACK
-            private set
         private var defaultCircleColor = Color.BLACK
-            private set
 
         // bounds for world coordinates
         var xMin = -10.0
@@ -111,7 +108,6 @@ class Graph private constructor(builder : Builder)
 
         // place tick marks at these positions on the axes
         private var defaultTicks = listOf(-8.0, -6.0, -4.0, -2.0, 2.0, 4.0, 6.0, 8.0)
-            private set
         var xTicks = defaultTicks
             private set
         var yTicks = defaultTicks
