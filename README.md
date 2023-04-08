@@ -20,13 +20,12 @@ Classes `Point`, `Circle`, and `Label` are shown in Listings 1-3.  Class `Point`
 #### Listing 1\. Class `Point`.
 ````kotlin
 /**
- * Point encapsulates a pair of double values representing a point
- * in the x,y-plane using world coordinates.
+ * Point encapsulates a pair of double values representing
+ * a point in the x,y-plane using world coordinates.
  */
-data class Point(val x : Double, val y : Double) : Comparable<Point>
-  {
-    constructor(x : Int, y : Int) : this(x.toDouble(), y.toDouble())
-  }
+data class Point(val x: Double, val y: Double) {
+    constructor(x: Int, y: Int): this(x.toDouble(), y.toDouble())
+}
 ````
 
 #### Listing 2\. Class `Circle`.
@@ -34,11 +33,10 @@ data class Point(val x : Double, val y : Double) : Comparable<Point>
 /**
  * Circle encapsulates a circle with center at (x, y) and specified radius.
  */
-data class Circle(val x : Double, val y : Double, val radius : Double)
-  {
-    constructor(x : Int, y : Int, radius : Int) : this(x.toDouble(), y.toDouble(), radius.toDouble())
-  }
-````
+data class Circle(val x: Double, val y: Double, val radius: Double) {
+    constructor(x: Int, y: Int, radius: Int):
+            this(x.toDouble(), y.toDouble(), radius.toDouble())
+}````
 
 #### Listing 3\. Class `Label`.
 ````kotlin
@@ -46,10 +44,9 @@ data class Circle(val x : Double, val y : Double, val radius : Double)
  * Label encapsulates a double value and a string, where the double value
  * represents a point on an axis and the string is used to label that point.
  */
-data class Label(val tick : Double, val label : String)
-  {
-    constructor(tick : Int, label : String) : this(tick.toDouble(), label)
-  }
+data class Label(val tick: Double, val label: String) {
+    constructor(tick: Int, label: String): this(tick.toDouble(), label)
+}
 ````
 
 Classes `ScreenPoint`, `GraphPoints`, `GraphFunction` and `GraphCircle` are very simple and are used only internally with the library. Class `ScreenPoint` encapsulates a pair of integer values representing pixel coordinates on the screen of an Android device. This class is similar to but simpler than the Android class `Point` in package `android.graphics`.  Class `GraphPoints` encapsulates a list of screen points together with a color used to plot them.  This class is used internally for both plotting points and drawing line graphs.  Class `GraphFunction` encapsulates a function of type `(Double) -> Double` plus a color used to graph that function.  Similarly, class `GraphCircle` encapsulates a circle plus a color used to draw that circle.  Developers do not need to understand these four classes in order to use the library, and no further descriptions of the classes are provided. However, the source code for these classes is provided for anyone interested in the details.
@@ -58,29 +55,29 @@ Class `Graph` contains information about the colors, points, labels, graphs, etc
 
 #### Listing 4\. Summary of methods in class `Graph.Builder`.
 ````kotlin
-fun addFunction(function : (Double) -> Double) : Builder
-fun addFunction(color : Int, function : (Double) -> Double) : Builder
-fun addPoints(points : List<Point>, color : Int = defaultPointColor) : Builder
-fun addLineGraph(points : List<Point>, color : Int = defaultPointColor) : Builder
-fun addCircle(circle : Circle, color : Int = defaultCircleColor) : Builder
-fun setBackgroundColor(bgColor : Int) : Builder
-fun setAxesColor(axesColor : Int) : Builder
-fun setFunctionColor(functionColor : Int) : Builder
-fun setPointColor(pointColor : Int) : Builder
-fun setCircleColor(circleColor : Int) : Builder
-fun setWorldCoordinates(xMin : Double, xMax : Double, yMin : Double, yMax : Double) : Builder
-fun setWorldCoordinates(xMin : Int, xMax : Int, yMin : Int, yMax : Int) : Builder
-fun setAxes(x : Double, y : Double) : Builder
-fun setAxes(x : Int, y : Int) : Builder
-fun setXTicks(xTicks : List<Double>) : Builder
-fun setXTicks(vararg xTicks : Double) : Builder
-fun setXTicks(vararg xTicks : Int) : Builder
-fun setYTicks(yTicks : List<Double>) : Builder
-fun setYTicks(vararg yTicks : Double) : Builder
-fun setYTicks(vararg yTicks : Int) : Builder
-fun setXLabels(xLabels : List<Label>) : Builder
-fun setYLabels(yLabels : List<Label>) : Builder
-fun build() : Graph = Graph(this)
+fun addFunction(function: (Double) -> Double): Builder
+fun addFunction(color: Int, function: (Double) -> Double): Builder
+fun addPoints(points: List<Point>, color: Int = defaultPointColor): Builder
+fun addLineGraph(points: List<Point>, color: Int = defaultPointColor): Builder
+fun addCircle(circle: Circle, color: Int = defaultCircleColor): Builder
+fun setBackgroundColor(bgColor: Int): Builder
+fun setAxesColor(axesColor: Int): Builder
+fun setFunctionColor(functionColor: Int): Builder
+fun setPointColor(pointColor: Int): Builder
+fun setCircleColor(circleColor: Int): Builder
+fun setWorldCoordinates(xMin: Double, xMax: Double, yMin: Double, yMax: Double): Builder
+fun setWorldCoordinates(xMin: Int, xMax: Int, yMin: Int, yMax: Int): Builder
+fun setAxes(x: Double, y: Double): Builder
+fun setAxes(x: Int, y: Int): Builder
+fun setXTicks(xTicks: List<Double>): Builder
+fun setXTicks(vararg xTicks: Double): Builder
+fun setXTicks(vararg xTicks: Int): Builder
+fun setYTicks(yTicks: List<Double>): Builder
+fun setYTicks(vararg yTicks: Double): Builder
+fun setYTicks(vararg yTicks: Int): Builder
+fun setXLabels(xLabels: List<Label>): Builder
+fun setYLabels(yLabels: List<Label>): Builder
+fun build(): Graph = Graph(this)
 ````
 
 As shown in Listing 4, many of the methods are overloaded to make the library easier to use.  For example, the default color used to graph a function is black, but that can be changed using method `setFunctionColor()`.  You can add just a function to the `Graph`, and it will be graphed using the current default function color.  Alternatively, there is a single method that lets you add both a function and the color to be used to graph it.  Similarly, several methods are overloaded to accept parameters of type `Int` or type `Double`, with the `Int` values being converted to `Double` within the class.
@@ -113,14 +110,14 @@ In the XML file for the activity's (or fragment's) layout, declare a `GraphView`
 <com.softmoore.android.graphlib.GraphView
     android:id="@+id/graph_view"
     android:layout_width="@dimen/graphView_width"
-    android:layout_height="@dimen/graphView_height"/>
+    android:layout_height="@dimen/graphView_height" />
 
 <TextView
     android:id="@+id/graph_view_label"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:textStyle="bold"/>
+    android:textStyle="bold" />
 ````
 
 **Step 4\. Import the library classes into the activity.**
@@ -138,6 +135,8 @@ import com.softmoore.graphlib.Circle
 **Step 5\. Build a `Graph` object and add it to the `GraphView`.**
 Listing 7 shows the creation of the simplest possible graph object; i.e., a graph object that uses all of the default values. It essentially contains only an x-axis and a y-axis, with everthing drawn in the default color black.  The values on both axes range from -10 to 10, but only the even integer values are labeled. The listing also sets a title for the screen and text for the TextView below the graph. The result of running this application on an Android device is shown in Figure 2.
 
+> All subsequent listings use view binding instead of `findViewById()`, as explained in "[View binding](https://developer.android.com/topic/libraries/view-binding)".
+
 > The essence of using this library is summarized in Step 5: Use `Graph.Builder` to build a `Graph` that gets displayed in a `GraphView` on an Android device.
 
 #### Listing 7\. Build a `Graph` object and add it to the `GraphView`.
@@ -145,12 +144,9 @@ Listing 7 shows the creation of the simplest possible graph object; i.e., a grap
 val graph = Graph.Builder()
     .build();
 
-val graphView : GraphView = findViewById(R.id.graph_view)
-graphView.setGraph(graph)
-
+binding.graphView.setGraph(graph)
+binding.graphViewLabel.text = getString(R.string.graphOfAxes)
 title = getString(R.string.emptyGraph)
-val textView : TextView = findViewById(R.id.graph_view_label);
-textView.text = getString(R.string.graphOfAxes)
 ````
 <figure>
   <img src="images/EmptyGraph.png" alt="Empty Graph."/>
