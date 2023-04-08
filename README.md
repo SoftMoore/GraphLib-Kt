@@ -134,9 +134,7 @@ import com.softmoore.graphlib.Circle
 ````
 
 **Step 5\. Build a `Graph` object and add it to the `GraphView`.**
-Listing 7 shows the creation of the simplest possible graph object; i.e., a graph object that uses all of the default values. It essentially contains only an x-axis and a y-axis, with everthing drawn in the default color black.  The values on both axes range from -10 to 10, but only the even integer values are labeled. The listing also sets a title for the screen and text for the TextView below the graph. The result of running this application on an Android device is shown in Figure 2.
-
-> All subsequent listings use view binding instead of `findViewById()`, as explained in "[View binding](https://developer.android.com/topic/libraries/view-binding)".
+Listing 7 shows the creation of the simplest possible graph object; i.e., a graph object that uses all of the default values. It essentially contains only an x-axis and a y-axis, with everthing drawn in the default color black.  The values on both axes range from -10 to 10, but only the even integer values are labeled. The listing also sets a title for the screen and text for the TextView below the graph. The result of running this application on an Android device is shown in Figure 2.  Note that the code in Listing 7 uses view binding instead of `findViewById()`, as explained in "[View binding](https://developer.android.com/topic/libraries/view-binding)".
 
 > The essence of using this library is summarized in Step 5: Use `Graph.Builder` to build a `Graph` that gets displayed in a `GraphView` on an Android device.
 
