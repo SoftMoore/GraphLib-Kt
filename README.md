@@ -36,7 +36,8 @@ data class Point(val x: Double, val y: Double) {
 data class Circle(val x: Double, val y: Double, val radius: Double) {
     constructor(x: Int, y: Int, radius: Int):
             this(x.toDouble(), y.toDouble(), radius.toDouble())
-}````
+}
+````
 
 #### Listing 3\. Class `Label`.
 ````kotlin
