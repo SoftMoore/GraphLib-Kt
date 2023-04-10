@@ -78,7 +78,7 @@ fun setYTicks(vararg yTicks: Double): Builder
 fun setYTicks(vararg yTicks: Int): Builder
 fun setXLabels(xLabels: List<Label>): Builder
 fun setYLabels(yLabels: List<Label>): Builder
-fun build(): Graph = Graph(this)
+fun build(): Graph
 ````
 
 As shown in Listing 4, many of the methods are overloaded to make the library easier to use.  For example, the default color used to graph a function is black, but that can be changed using method `setFunctionColor()`.  You can add just a function to the `Graph`, and it will be graphed using the current default function color.  Alternatively, there is a single method that lets you add both a function and the color to be used to graph it.  Similarly, several methods are overloaded to accept parameters of type `Int` or type `Double`, with the `Int` values being converted to `Double` within the class.
