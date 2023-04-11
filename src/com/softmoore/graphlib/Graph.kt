@@ -3,9 +3,9 @@ package com.softmoore.graphlib
 import android.graphics.Color
 
 /**
- * This class contains information about the colors, points, labels, and graphs to
- * be drawn, but it is essentially independent of Android graphics details.  Graph
- * objects are created using the nested static subclass Builder (Builder Pattern).
+ * This class contains information about the colors, points, labels, and graphs
+ * to be drawn, but it is essentially independent of Android graphics details.
+ * Graph objects are created using the nested subclass Builder (Builder Pattern).
  */
 class Graph private constructor(builder: Builder) {
     // list of functions to graph
@@ -17,11 +17,11 @@ class Graph private constructor(builder: Builder) {
     // list of line graphs to draw
     internal val lineGraphs: List<GraphPoints>
 
-    // list of line circles to draw
-    internal val graphCircles: List<GraphCircle>
+    // list of circles to draw
+    internal val circles: List<GraphCircle>
 
-    // default colors for background, axes, functions, and graph points
-    val backgroundColor: Int
+    // default colors for background and axes
+    val bgColor:   Int
     val axesColor: Int
 
     // bounds for world coordinates
@@ -44,12 +44,12 @@ class Graph private constructor(builder: Builder) {
 
     init
       {
-        functions    = builder.functions
-        graphPoints  = builder.graphPoints
-        lineGraphs   = builder.lineGraphs
-        graphCircles = builder.graphCircles
-        backgroundColor = builder.bgColor
-        axesColor    = builder.axesColor
+        functions   = builder.functions
+        graphPoints = builder.graphPoints
+        lineGraphs  = builder.lineGraphs
+        circles     = builder.circles
+        bgColor     = builder.bgColor
+        axesColor   = builder.axesColor
         xMin    = builder.xMin
         xMax    = builder.xMax
         yMin    = builder.yMin
@@ -63,17 +63,17 @@ class Graph private constructor(builder: Builder) {
       }
 
     class Builder {
-        // list of graph functions to graph
+        // list of functions to graph
         internal val functions = mutableListOf<GraphFunction>()
 
-        // list of graph graphPoints to plot
+        // list of graphPoints to plot
         internal val graphPoints = mutableListOf<GraphPoints>()
 
         // list of line graphs to draw
         internal val lineGraphs = mutableListOf<GraphPoints>()
 
         // List of circles to draw
-        internal val graphCircles = mutableListOf<GraphCircle>()
+        internal val circles = mutableListOf<GraphCircle>()
 
         // default colors for background, axes, functions, and graphPoints
         var bgColor = Color.WHITE
@@ -82,7 +82,7 @@ class Graph private constructor(builder: Builder) {
             private set
         private var defaultFunctionColor = Color.BLACK
         private var defaultPointColor    = Color.BLACK
-        private var defaultCircleColor    = Color.BLACK
+        private var defaultCircleColor   = Color.BLACK
 
         // bounds for world coordinates
         var xMin = -10.0
@@ -114,7 +114,7 @@ class Graph private constructor(builder: Builder) {
             private set
 
         /**
-         * Add a function to graph using the default color.
+         * Add a function to graph.  The function will be graphed using the default function color.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
         fun addFunction(function: (Double) -> Double): Builder {
@@ -123,9 +123,7 @@ class Graph private constructor(builder: Builder) {
         }
 
         /**
-         * Add a function to graph and the color to be used for the graph.
-         * Note that function is the second (last) parameter to support
-         * Kotlin conventions for passing lambda expressions.
+         * Add a function to graph and the color to be used for graphing the function.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
         fun addFunction(color: Int, function: (Double) -> Double): Builder {
@@ -134,29 +132,56 @@ class Graph private constructor(builder: Builder) {
         }
 
         /**
-         * Add a list of points to be plotted and the color for those points.
+         * Add a list of points to the graph.  The points will be plotted using the default point color.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun addPoints(points: List<Point>, color: Int = defaultPointColor): Builder {
+        fun addPoints(points: List<Point>): Builder {
+            graphPoints.add(GraphPoints(points, defaultPointColor))
+            return this
+        }
+
+        /**
+         * Add a list of points to the graph and the color to be used for plotting those points.
+         * @return This Builder object to allow for chaining of calls to builder methods.
+         */
+        fun addPoints(color: Int, points: List<Point>): Builder {
             graphPoints.add(GraphPoints(points, color))
             return this
         }
 
         /**
-         * Add a list of points for a line graph to draw and the color for the line graph.
+         * Add a list of points for a line graph.  The line graph will be drawn using the default point color.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun addLineGraph(points: List<Point>, color: Int = defaultPointColor): Builder {
-            lineGraphs.add(GraphPoints(points, color))
+        fun addLineGraph(points: List<Point>): Builder {
+            lineGraphs.add(GraphPoints(points, defaultPointColor))
             return this
         }
 
         /**
-         * Add a circle to draw using the specified color.
+         * Add a list of points for a line graph and the color for drawing the line graph.
          * @return This Builder object to allow for chaining of calls to builder methods.
          */
-        fun addCircle(circle: Circle, color: Int = defaultCircleColor): Builder {
-            graphCircles.add(GraphCircle(circle, color))
+        fun addLineGraph(color: Int, points: List<Point>): Builder {
+            lineGraphs.add(GraphPoints(points, defaultPointColor))
+            return this
+        }
+
+        /**
+         * Add a circle to the graph.  The circle will be drawn using the default circle color.
+         * @return This Builder object to allow for chaining of calls to builder methods.
+         */
+        fun addCircle(circle: Circle): Builder {
+            circles.add(GraphCircle(circle, defaultCircleColor))
+            return this
+        }
+
+        /**
+         * Add a circle to the graph and the color to be used for drawing the circle.
+         * @return This Builder object to allow for chaining of calls to builder methods.
+         */
+        fun addCircle(color: Int, circle: Circle): Builder {
+            circles.add(GraphCircle(circle, defaultCircleColor))
             return this
         }
 

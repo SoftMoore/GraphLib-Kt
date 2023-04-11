@@ -58,9 +58,12 @@ Class `Graph` contains information about the colors, points, labels, graphs, etc
 ````kotlin
 fun addFunction(function: (Double) -> Double): Builder
 fun addFunction(color: Int, function: (Double) -> Double): Builder
-fun addPoints(points: List<Point>, color: Int = defaultPointColor): Builder
-fun addLineGraph(points: List<Point>, color: Int = defaultPointColor): Builder
-fun addCircle(circle: Circle, color: Int = defaultCircleColor): Builder
+fun addPoints(points: List<Point>): Builder
+fun addPoints(color: Int, points: List<Point>): Builder
+fun addLineGraph(points: List<Point>): Builder
+fun addLineGraph(color: Int, points: List<Point>): Builder
+fun addCircle(circle: Circle): Builder
+fun addCircle(color: Int, circle: Circle): Builder
 fun setBackgroundColor(bgColor: Int): Builder
 fun setAxesColor(axesColor: Int): Builder
 fun setFunctionColor(functionColor: Int): Builder
@@ -77,8 +80,8 @@ fun setYTicks(yTicks: List<Double>): Builder
 fun setYTicks(vararg yTicks: Double): Builder
 fun setYTicks(vararg yTicks: Int): Builder
 fun setXLabels(xLabels: List<Label>): Builder
-fun setYLabels(yLabels: List<Label>): Builder
-fun build(): Graph
+fun setYLabels(yLabel: List<Label>): Builder
+fun build(): Graph = Graph(this)
 ````
 
 As shown in Listing 4, many of the methods are overloaded to make the library easier to use.  For example, the default color used to graph a function is black, but that can be changed using method `setFunctionColor()`.  You can add just a function to the `Graph`, and it will be graphed using the current default function color.  Alternatively, there is a single method that lets you add both a function and the color to be used to graph it.  Similarly, several methods are overloaded to accept parameters of type `Int` or type `Double`, with the `Int` values being converted to `Double` within the class.
@@ -158,14 +161,14 @@ The remainder of this article will present several examples with brief descripti
 
 ### Example 1: Graph of y = x<sup>2</sup> with color and adjusted world coordinates.
 
-Let's start by adding the function y = x<sup>2</sup> to a graph, and let's draw the function using the color red. As shown in Listing 8, there is method `addFunction()` that has two parameters &ndash; both the function to be graphed and the color to be used for that graph.  Note the use of a lambda expression for the function.
+Let's start by adding the function y = x<sup>2</sup> to a graph, and let's draw the function using the color red. As shown in Listing 8, there is method `addFunction()` that has two parameters &ndash; both the function to be graphed and the color to be used for that graph.  Note the use of a lambda expression for the function.  Kotlin allows the lambda expression to be simplified as `{it*it}`, but a lamda expression explictly showing the parameter is used in this and all subsequent examples since it more closely resembles the mathematical notation for a function.
 
 Also, since the function y = x<sup>2</sup> is predominantly above the x-axis, we will adjust the world coordinates (a.k.a. window) for the graph to show more of the function.  For this example we will let the x-axis range from -5 to 5 and the y-axis range from -2 to 20\. When we make this change, we also need to modify the "tick" marks on the axes using calls to methods `setXTicks()` and `setYTicks()`. Listing 8 shows the code to build this graph, and Figure 3 shows the resulting application running on an Android device.
 
 #### Listing 8\. Graph of y = x<sup>2</sup> with color and adjusted world coordinates.
 ````kotlin
 val graph = Graph.Builder()
-    .addFunction(Color.RED) {x -> x*x}
+    .addFunction(Color.RED) {x -> x*x}   // or simply {it*it}
     .setWorldCoordinates(-5, 5, -2, 20)
     .setXTicks(-4, -3, -2, -1, 1, 2, 3, 4)
     .setYTicks(2, 4, 6, 8, 10, 12, 14, 16, 18)
@@ -185,7 +188,7 @@ Listing 9 shows how to add three functions, each with different colors, and Figu
 ````kotlin
 val graph = Graph.Builder()
     .addFunction(Color.RED, ::sin)
-    .addFunction( Color.BLUE) {x -> 0.1*x*x*x}
+    .addFunction(Color.BLUE) {x -> 0.1*x*x*x}
     .addFunction(Color.GREEN) {x -> 1/x}
     .setWorldCoordinates(-2*PI, 2*PI, -5.0, 5.0)
     .setXTicks(-3, -1, 1, 3)
@@ -200,17 +203,18 @@ val graph = Graph.Builder()
 
 ### Example 3: Line graph plus data points.
 
-This example illustrates how to add a line graph plus data points.  Both line graphs and data points are defined by a set of points.  The difference is that we call `addLineGraph()` when using the points to define a line graph, and we call `addPoints()` when using the points define the data points.  This example uses the same set of points for both.  We call method `addPoints()` so that the data points themselves are highlighted as small circles.  Listing 10 shows how to add a line graph with data points, and Figure 5 shows the application running on an Android device.  Note that the last data point (12, 6) does not get displayed since it falls outside the (default) world coordinates.
+This example illustrates how to add a line graph plus data points.  Both line graphs and data points are defined by a set of points.  The difference is that we call `addLineGraph()` when using the points to define a line graph, and we call `addPoints()` when using the points define the data points.  This example uses the same set of points for both.  We call method `addPoints()` so that the data points themselves are highlighted as small circles.  Listing 10 shows how to add a line graph with data points, and Figure 5 shows the application running on an Android device.  The default color is set to  red, which is used for both the line graph and the data points.  Note that the last data point (12, 6) does not get displayed since it falls outside the (default) world coordinates.
 
 #### Listing 10\. Line graph.
 ````kotlin
-val points = listOf(Point(-10, 3), Point(-8, 4),  Point(5, 2),
-                    Point(0, 0),   Point(2, -3),  Point(3,3),
-                    Point(7,5),    Point(9, 9),   Point(12, 6))
+val points = listOf(Point(-10, 3), Point(-8, 4), Point(0, 0),
+                    Point(2, -3),  Point(3,3),   Point(5, 2),
+                    Point(7,5),    Point(9, 9),  Point(12, 6))
 
 val graph = Graph.Builder()
-    .addLineGraph(points, Color.RED)
-    .addPoints(points, Color.RED)
+    .setPointColor(Color.RED)
+    .addLineGraph(points)
+    .addPoints(points)
     .build()
 ````
 
@@ -237,9 +241,9 @@ val graph = Graph.Builder()
     .setYTicks(-1.5, -0.5, 0.5, 1.5)
     .setCircleColor(Color.MAGENTA)
     .addCircle(Circle(0, 0, 1))   // uses default circle color magenta
-    .addCircle(Circle(0.5, 0.0, 1.5) , Color.RED)
-    .addLineGraph(verticalLine, Color.BLUE)
-    .addLineGraph(triangle)      // uses default triangle color black
+    .addCircle(Color.RED, Circle(0.5, 0.0, 1.5))
+    .addLineGraph(Color.BLUE, verticalLine)
+    .addLineGraph(triangle)   // uses default triangle color black
     .build()
 ````
 
@@ -254,6 +258,7 @@ For this example let's assume that we have a weight-tracking application that sh
 
 #### Listing 12\. Tracking weight for one month.
 ````kotlin
+// points show weights for every third day of the month
 val points = listOf(Point(1, 178),  Point(4, 179),  Point(7, 179),
                     Point(10, 181), Point(13, 180), Point(16, 182),
                     Point(19, 182), Point(22, 184), Point(25, 183),
@@ -282,11 +287,13 @@ We now come full circle back to the motivating example depicted in Figure 1 at t
 
 #### Listing 13\. Tracking weight for a year.
 ````kotlin
+// points show average weight for each month
 val points = listOf(Point(1, 178),  Point(2, 179),  Point(3, 179),
                     Point(4, 181),  Point(5, 180),  Point(6, 182),
                     Point(7, 182),  Point(8, 184),  Point(9, 183),
                     Point(10, 185), Point(11, 185), Point(12, 186))
 
+// labels for months
 val xLabels = listOf(Label(1, "J"),  Label(2, "F"),  Label(3, "M"),
                      Label(4, "A"),  Label(5, "M"),  Label(6, "J"),
                      Label(7, "J"),  Label(8, "A"),  Label(9, "S"),

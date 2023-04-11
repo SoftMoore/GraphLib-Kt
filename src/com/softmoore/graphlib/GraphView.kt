@@ -126,7 +126,7 @@ class GraphView : View {
     }
 
     private fun drawViewFrame(canvas: Canvas) {
-        canvas.drawColor(g.backgroundColor)
+        canvas.drawColor(g.bgColor)
         paint.color = g.axesColor
         paint.style = Paint.Style.STROKE
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
@@ -309,7 +309,7 @@ class GraphView : View {
     }
 
     private fun drawGraphCircles(canvas: Canvas) {
-        for (circle in g.graphCircles)
+        for (circle in g.circles)
             drawGraphCircle(circle, canvas)
     }
 
