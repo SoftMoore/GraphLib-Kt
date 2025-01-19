@@ -58,7 +58,7 @@ class GraphView : View {
             }
             densityDpi <= DisplayMetrics.DENSITY_XHIGH -> {
                 pointRadius = 6
-                tickOffset  = 7
+                tickOffset  = 8
                 labelOffset = 5
                 textSize    = 20
                 strokeWidth = 2
@@ -68,14 +68,14 @@ class GraphView : View {
                 tickOffset  = 9
                 labelOffset = 7
                 textSize    = 30
-                strokeWidth = 2
+                strokeWidth = 3
             }
             else -> {
                 pointRadius = 10
                 tickOffset  = 10
                 labelOffset = 9
                 textSize    = 35
-                strokeWidth = 3
+                strokeWidth = 4
             }
         }
 
