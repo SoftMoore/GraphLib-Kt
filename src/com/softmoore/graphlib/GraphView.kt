@@ -12,7 +12,7 @@ import kotlin.math.abs
 import kotlin.math.round
 import kotlin.math.roundToLong
 
-class GraphView : View {
+class GraphView: View {
     private var paint = Paint()
     private var pointRadius = 0
     private var tickOffset  = 0
